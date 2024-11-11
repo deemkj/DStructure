@@ -37,6 +37,16 @@ public class Word {
         return true;
      return false;
  }
+  public void display() {
+      System.out.println("Word: "+word );
+      docID.findFirst();
+      if(docID.empty()){
+          System.out.println("There is no document has that word");
+          return;
+      }
+      while(!docID.last())
+           System.out.print(docID.retrieve()+", ");
   
-    
+      System.out.println(docID.retrieve()); 
+  }
 }
