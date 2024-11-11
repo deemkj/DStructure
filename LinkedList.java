@@ -10,6 +10,7 @@
 public class LinkedList<T> {
     private Node<T> head;
     private Node<T> current;
+    
 
     public LinkedList() {
         head = current = null;
@@ -25,4 +26,28 @@ public class LinkedList<T> {
         }
         return current.next == null;
     }
+    
+    public void findFirst(){
+        current=head;
+    }
+   
+    public void findNext(){
+        current=current.next;
+    }
+    public T retrieve(){
+        return current.data;
+    }
+   
+   public void insert (T val) {
+ Node<T> tmp;
+if (empty()) {
+current = head = new Node<T> (val);
+}
+else {
+tmp = current.next;
+current.next = new Node<T> (val);
+current = current.next;
+current.next = tmp;
+}
+   }
 }
