@@ -27,8 +27,10 @@ public class Document {
         System.out.println("Words: ");
         Words.findFirst();
         while(!Words.last()){
-            System.out.print(Words.retrieve()+", ");
-            Words.findNext(); 
+         System.out.print(Words.retrieve()+", ");
+    
+            Words.findNext();
+            
         }
         if(!Words.empty())
           System.out.println(Words.retrieve());

@@ -45,9 +45,11 @@ public class Word {
           return;
       }
        System.out.println("Document IDs that have this word:");
-      while(!docID.last())
+      while(!docID.last()){
            System.out.print(docID.retrieve()+", ");
-  
+           docID.findNext();
+      }
       System.out.println(docID.retrieve()); 
+      System.out.println("**************************************");
   }
 }
