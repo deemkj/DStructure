@@ -15,7 +15,7 @@ public class InvertedIndex {
     }
   
   public void add(String word, int id){
-      if(isExist(word))
+      if(isWordExist(word))
       Inverted_Index.retrieve().addID(id);
       else
       {
@@ -30,7 +30,7 @@ public class InvertedIndex {
   }
   
   
-  public boolean isExist(String w){
+  public boolean isWordExist(String w){
       if(Inverted_Index.empty())
       return false;
       
