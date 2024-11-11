@@ -11,7 +11,7 @@
 
 public class Document {
      int id;
-    private LinkedList<String> Words ;
+     LinkedList<String> Words ;
 
     // Constructor
    

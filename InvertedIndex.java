@@ -44,5 +44,19 @@ public class InvertedIndex {
               return true;
       return false;
   }
+  
+  public void display(){
+      
+     if(Inverted_Index.empty() ||Inverted_Index==null ) {
+         System.out.println("Inverted_Index is empty");
+      return;
+     }
+     Inverted_Index.findFirst();
+     while(!Inverted_Index.last()){
+         Inverted_Index.retrieve().display();
+          Inverted_Index.findNext();
+     }
+      Inverted_Index.retrieve().display();
+  }
     
 }

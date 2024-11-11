@@ -44,6 +44,7 @@ public class Word {
           System.out.println("There is no document has that word");
           return;
       }
+       System.out.println("Document IDs that have this word:");
       while(!docID.last())
            System.out.print(docID.retrieve()+", ");
   
