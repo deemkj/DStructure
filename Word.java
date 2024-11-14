@@ -9,7 +9,7 @@
  */
 public class Word {
     String word;
-   private LinkedList <Integer> docID;
+   public LinkedList <Integer> docID;
 
     public Word(String word ) {
         this.word = word;

@@ -32,7 +32,28 @@ public class Index {
                    Documents.retrieve().display();
 
     }
-    
+    public Document getDocumentByID(int id){ // This method searches for a specific document by its ID in the document list
+                                        // If a document with the given ID is found, it returns that document; otherwise, it returns null.
+
+        
+         if(Documents.empty()) {
+           return null;
+     
+       }
+       Documents.findFirst();
+       while(!Documents.last()){
+            if(Documents.retrieve().id==id)
+                return Documents.retrieve();
+            Documents.findNext();
+       }
+                 if(Documents.retrieve().id==id)
+                return Documents.retrieve();
+                 return null;
+
+        
+        
+        
+    }
     
     public static void main(String[] args) {
         
