@@ -103,7 +103,7 @@ public class BST<T> {
              if (node == null) return;
 
              traverseAndDisplay(node.left);
-             System.out.println("Key: " + node.key);
+             //System.out.println("Key: " + node.key);
             ((Word)node.data).display();
             traverseAndDisplay(node.right);
          }

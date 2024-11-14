@@ -36,9 +36,30 @@ public class InvertedIndexBST {
           
         }
           public void display(){
+             if(InvertedIndex.empty()){
+
+                  System.out.println("Empty inverted index");
+                  return;
+              }
+             
               InvertedIndex.displayInOrder();
           }
-        }
+          
+          
+          
+          public boolean isWordExist(String w){
+      if(InvertedIndex.empty())
+      return false;
+      
+     
+          if(InvertedIndex.findkey(w))
+              return true;
+      
+      
+      return false;
+          }
+  }
+        
         
         
         
