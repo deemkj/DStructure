@@ -14,6 +14,33 @@ public class QueryProcessing {
     public QueryProcessing(InvertedIndex inverted) {
         this.inverted = inverted;
     }
+    
+    public static LinkedList<Integer> BooleanQuery(String query) {
+
+    if (!query.contains("AND") && !query.contains("OR"))
+        return andQ(query);
+    else if (query.contains("AND") && !query.contains("OR"))
+        return andQ(query);
+    else if (!query.contains("AND") && query.contains("OR"))
+        return ORQ(query);
+    else
+        return MixQuery(query);
+}
+
+    public static LinkedList<Integer> MixQuery(String query) {
+    LinkedList<Integer> A = new LinkedList<Integer>();
+    LinkedList<Integer> B = new LinkedList<Integer>();
+    if (query.length() == 0) return A;
+    String ors[] = query.split("OR");
+
+    A = andQ(ors[0]);
+    for (int i = 1; i < ors.length; i++) {
+        B = andQ(ors[i]);
+        A = ORQ(A, B);
+    }
+    return A;
+}
+
 
     public static LinkedList<Integer> andQ(String query) {
         LinkedList<Integer> A = new LinkedList<>();
@@ -148,6 +175,11 @@ public class QueryProcessing {
         return result;
     }
 
+    
+    
+    
+    
+}
     
     
     
