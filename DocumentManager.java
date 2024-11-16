@@ -24,6 +24,72 @@ public class DocumentManager {
         Inverted_Index_BST=new InvertedIndexBST();
         
     }
+    
+    
+  public int calculateVocabularySize(String fileName) {
+    LinkedList<String> allWords = new LinkedList<>();
+    try {
+        File file = new File(fileName);
+        Scanner scanner = new Scanner(file);
+
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
+        }
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            if (line.trim().isEmpty()) continue; 
+
+            String[] words = line.toLowerCase().split("\\s+");
+            for (String word : words) {
+                word = word.replaceAll("^[^a-zA-Z]+|[^a-zA-Z]+$", "");
+                if (!word.isEmpty() && !isWordInList(allWords, word)) {
+                    allWords.insert(word);
+                }
+            }
+        }
+        scanner.close();
+    } catch (Exception e) {
+        System.out.println("Error reading the file: " + e.getMessage());
+    }
+
+    return allWords.size();
+}
+
+private boolean isWordInList(LinkedList<String> list, String word) {
+    if (list.empty()) return false;
+    list.findFirst();
+    while (!list.last()) {
+        if (list.retrieve().equals(word)) return true;
+        list.findNext();
+    }
+    return list.retrieve().equals(word); // تحقق من العنصر الأخير
+}
+    public int countTokensInFile(String fileName) {
+    int tokenCount = 0;
+
+    try {
+        File file = new File(fileName);
+        Scanner scanner = new Scanner(file);
+
+     
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine(); 
+
+            if (!line.isEmpty()) {
+                String[] tokens = line.split("\\s+");
+                tokenCount += tokens.length; 
+            }
+        }
+        scanner.close();
+    } catch (Exception e) {
+        System.out.println("Error reading file: " + e.getMessage());
+    }
+
+    return tokenCount;
+}
+
+
     public void LoadingStopWords(String fN){
         
         
@@ -118,18 +184,81 @@ public class DocumentManager {
         
   
     public static void main (String[] args){
-        DocumentManager d=new DocumentManager();
-         d.LoadingStopWords("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/stop.txt");
-        d.Load("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
+       
+    
+        DocumentManager documentManager = new DocumentManager();
+        documentManager.LoadingStopWords("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/stop.txt");
+        documentManager.Load("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
         
-     //d.index.display();
-     System.out.println("OLD");
-    d.Inverted_Index.display();
-     //d.StopWords.display();
-       System.out.println("NEW");
-     
-     d.Inverted_Index_BST.display() ;
+
+        QueryProcessing queryProcessor = new QueryProcessing(documentManager.Inverted_Index);
+        QueryProcessingBST queryProcessorBST = new QueryProcessingBST(documentManager.Inverted_Index_BST);
+
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("========== Test Menu ==========");
+            System.out.println("1. Boolean Retrieval");
+            System.out.println("2. Ranked Retrieval");
+            System.out.println("3. Indexed Documents");
+            System.out.println("4. Indexed Tokens");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // استهلاك السطر الجديد
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter a Boolean query: ");
+                    String booleanQuery = scanner.nextLine();
+                    LinkedList<Integer> booleanResults = queryProcessor.BooleanQuery(booleanQuery);
+                    System.out.println("Unranked Documents:");
+                    if (booleanResults.empty()) {
+                        System.out.println("No documents found.");
+                    } else {
+                        booleanResults.findFirst();
+                        while (!booleanResults.last()) {
+                            System.out.println("Doc ID: " + booleanResults.retrieve());
+                            booleanResults.findNext();
+                        }
+                        System.out.println("Doc ID: " + booleanResults.retrieve()); // طباعة العنصر الأخير
+                    }
+                    break;
+
+                case 2:
+                    System.out.print("Enter a ranked query: ");
+                    String rankedQuery = scanner.nextLine();
+                    Ranking2 ranking = new Ranking2(documentManager.index, documentManager.Inverted_Index_BST, rankedQuery);
+                    ranking.generateRankedList();
+                    ranking.displayRankedDocuments();
+                    break;
+
+                case 3:
+                    System.out.println("Number of documents in the index: " + documentManager.index.getDocumentCount());
+                    break;
+
+                case 4:
+                int totalTokens = documentManager.countTokensInFile("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
+                int vocabularySize = documentManager.calculateVocabularySize("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
+               System.out.println("Total number of tokens in the index: " + totalTokens);
+               System.out.println("Vocabulary size: " + vocabularySize);
+               break;
+
+
+                case 5:
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+            System.out.println();
+        }
     }
+        
+
     }
+    
         
 
