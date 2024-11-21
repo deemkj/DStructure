@@ -9,7 +9,7 @@
  */
 public class Word {
     String word;
-   public LinkedList <Integer> docID;
+    LinkedList <Integer> docID;
 
     public Word(String word ) {
         this.word = word;
@@ -51,5 +51,9 @@ public class Word {
       }
       System.out.println(docID.retrieve()); 
       System.out.println("**************************************");
+  }
+  
+  public LinkedList<Integer> getIDs(){
+      return docID;
   }
 }
