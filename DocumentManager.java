@@ -12,7 +12,12 @@ import java.util.Scanner;
  * @author deemkj
  */
 public class DocumentManager {
-    LinkedList<String> StopWords;
+  static  LinkedList<String> StopWords;
+static int countStopWords;    
+static int countCleanedWords;
+  static  LinkedList<String> AllUniqueWords;
+
+
     Index index;
     InvertedIndex Inverted_Index;
     InvertedIndexBST Inverted_Index_BST;
@@ -22,71 +27,111 @@ public class DocumentManager {
         index=new Index();
         Inverted_Index=new InvertedIndex();
         Inverted_Index_BST=new InvertedIndexBST();
+        AllUniqueWords=new  LinkedList<String>();
         
     }
     
     
   public int calculateVocabularySize(String fileName) {
-    LinkedList<String> allWords = new LinkedList<>();
+    LinkedList<String> uniqueWords = new LinkedList<>();
+    
     try {
         File file = new File(fileName);
         Scanner scanner = new Scanner(file);
-
-        if (scanner.hasNextLine()) {
-            scanner.nextLine();
-        }
+        
+      
+        scanner.nextLine(); 
 
         while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (line.trim().isEmpty()) continue; 
+            String line = scanner.nextLine(); 
+            
+          
+                   String     DocLine=line;                   
 
-            String[] words = line.toLowerCase().split("\\s+");
-            for (String word : words) {
-                word = word.replaceAll("^[^a-zA-Z]+|[^a-zA-Z]+$", "");
-                if (!word.isEmpty() && !isWordInList(allWords, word)) {
-                    allWords.insert(word);
+
+            DocLine = DocLine.toLowerCase().replaceAll("[^a-zA-Z0-9\\s]", ""); 
+            DocLine = DocLine.replaceAll("\\s+", " "); 
+
+            // تقسيم السطر إلى كلمات
+            String[] tokens = DocLine.split(" "); 
+
+            for (String token : tokens) {
+                // إزالة أي رموز غير الأبجدية في بداية ونهاية الكلمة
+                token = token.replaceAll("^[^a-zA-Z]+|[^a-zA-Z]+$", "");
+                
+                if (!token.isEmpty()  && !isWordInList(uniqueWords, token)) {
+                    uniqueWords.insert(token);
                 }
             }
         }
+        
         scanner.close();
     } catch (Exception e) {
         System.out.println("Error reading the file: " + e.getMessage());
     }
 
-    return allWords.size();
+    return uniqueWords.size();  // العودة بحجم الـ LinkedList، وهو عدد الكلمات الفريدة
 }
 
+// طريقة للتحقق إذا كانت الكلمة موجودة بالفعل في LinkedList
 private boolean isWordInList(LinkedList<String> list, String word) {
     if (list.empty()) return false;
     list.findFirst();
     while (!list.last()) {
-        if (list.retrieve().equals(word)) return true;
+        if (list.retrieve().equalsIgnoreCase(word)) return true;
         list.findNext();
     }
-    return list.retrieve().equals(word); // تحقق من العنصر الأخير
+    return list.retrieve().equalsIgnoreCase(word); 
 }
-    public int countTokensInFile(String fileName) {
-    int tokenCount = 0;
+
+
+/*private boolean isWordInList(LinkedList<String> list, String word) {
+    if (list.empty()) return false;
+    list.findFirst();
+    while (!list.last()) {
+        if (list.retrieve().equalsIgnoreCase(word)) return true;
+        list.findNext();
+    }
+    return list.retrieve().equals(word); 
+}*/
+
+
+
+
+    public void countTokensInFile(String fileName) {
+            LinkedList<String> allWords = new LinkedList<>();
+
 
     try {
         File file = new File(fileName);
         Scanner scanner = new Scanner(file);
-
-     
+        
         while (scanner.hasNextLine()) {
+            
             String line = scanner.nextLine(); 
+            
+               
+                String DocLine = line.substring(line.indexOf(',') + 1).trim();
 
-            if (!line.isEmpty()) {
-                String[] tokens = line.split("\\s+");
-                tokenCount += tokens.length; 
-            }
+                              DocLine=DocLine.toLowerCase().replaceAll("\'", "");
+                                                   
+                                DocLine=DocLine.toLowerCase().replaceAll("-", " ");
+
+
+                String[] tokens = DocLine.split(" "); 
+                countCleanedWords+=tokens.length;
+                
+               
+                
+            
         }
+        
         scanner.close();
     } catch (Exception e) {
         System.out.println("Error reading file: " + e.getMessage());
     }
 
-    return tokenCount;
+  
 }
 
 
@@ -101,6 +146,7 @@ private boolean isWordInList(LinkedList<String> list, String word) {
             while (s.hasNextLine()) {
                 String word = s.nextLine();
                 StopWords.insert(word);
+                countStopWords++;
                
 
             }
@@ -128,8 +174,10 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                 String x = line.substring(0, line.indexOf(','));
                 int id = Integer.parseInt(x.trim());
                 String DocLine = line.substring(line.indexOf(',') + 1).trim();
+                
                 LinkedList<String> DocWords=cleanAndExtractWords(DocLine ,id); //this method return a list of words that are in the document
                 Document d1=new Document(id,DocWords);
+                
                 index.addDocument(d1);
                 
             }
@@ -150,13 +198,19 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                 words.insert(ExtractedWords[i]);
                 Inverted_Index.add(ExtractedWords[i],id);
                 Inverted_Index_BST.add(ExtractedWords[i], id);
-            }}
+               
+            }
+        
+                }
         
         return words;
     }
+    
+  
     public boolean isExistINStopWords(String w){
         if(StopWords.empty())
         return false;
+        w=w.replaceAll("-", " ");
         StopWords.findFirst();
         while(!StopWords.last()){
             if(StopWords.retrieve().equals(w))
@@ -165,7 +219,10 @@ private boolean isWordInList(LinkedList<String> list, String word) {
         }
          if(StopWords.retrieve().equals(w))
                 return true;
-         return false;
+         {
+                return false;
+         }
+      
     }
     public void displayThegivenIDs(LinkedList<Integer> DocIDs){
         DocIDs.findFirst();
@@ -198,14 +255,22 @@ private boolean isWordInList(LinkedList<String> list, String word) {
 
         while (true) {
             System.out.println("========== Test Menu ==========");
-            System.out.println("1. Boolean Retrieval");
+            //System.out.println("1. Boolean Retrieval");
+           // System.out.println("2. Ranked Retrieval");
+           // System.out.println("3. Indexed Documents");
+           // System.out.println("4. Indexed Tokens");
+           // System.out.println("5. Exit");
+           System.out.println("1. Boolean Retrieval");
             System.out.println("2. Ranked Retrieval");
-            System.out.println("3. Indexed Documents");
-            System.out.println("4. Indexed Tokens");
-            System.out.println("5. Exit");
+            System.out.println("3. Indexed Document");
+            System.out.println("4. Indexed Token");
+            System.out.println("5. Retrieve a term");
+
+            System.out.println("6. Exit");
+
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // استهلاك السطر الجديد
+            scanner.nextLine(); 
 
             switch (choice) {
                 case 1:
@@ -221,7 +286,7 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                             System.out.println("Doc ID: " + booleanResults.retrieve());
                             booleanResults.findNext();
                         }
-                        System.out.println("Doc ID: " + booleanResults.retrieve()); // طباعة العنصر الأخير
+                        System.out.println("Doc ID: " + booleanResults.retrieve()); 
                     }
                     break;
 
@@ -238,14 +303,48 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                     break;
 
                 case 4:
-                int totalTokens = documentManager.countTokensInFile("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
-                int vocabularySize = documentManager.calculateVocabularySize("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
-               System.out.println("Total number of tokens in the index: " + totalTokens);
-               System.out.println("Vocabulary size: " + vocabularySize);
+             documentManager.countTokensInFile("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
+           int vocabularySize = documentManager.calculateVocabularySize("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
+      
+               System.out.println("Total number of tokens in the index: " + ((countCleanedWords)));
+               System.out.println("Vocabulary size: " + (vocabularySize));
                break;
+                case 5 :
+                     System.out.println("Retrieve a term:");
+                    System.out.println("1. Using index with lists");
+                    System.out.println("2. Using inverted index with lists");
+                    System.out.println("3. Using inverted index with BST");
+                    System.out.print("Enter your choice: ");
+                    int retrieveChoice = scanner.nextInt();
+                    scanner.nextLine();
+                    
+                    {
+                      switch(retrieveChoice)  {
+                          
+                          case 1:
+                               System.out.println("Enter term to search about");
+                                String searchTerm = scanner.nextLine();
+                                LinkedList<Integer> docIDs=documentManager.index.SearchTermInDocuments(searchTerm);
+                                if(docIDs.empty())
+                                    System.out.println("There is no document that contains this word");
+                                else{
+                                    System.out.println("Documents containing the term " + searchTerm + ":");
+                                    docIDs.display();}
+                                break;
+                              
+                          
+                          
+                          
+                          
+                      }
+                        
+                        
+                        
+                        
+                    }
 
 
-                case 5:
+                case 6:
                     System.out.println("Exiting...");
                     scanner.close();
                     return;

@@ -11,6 +11,8 @@
 
 public class InvertedIndexBST {
     BST<Word> InvertedIndex;
+         static int countCleanedWords;
+
 
     public InvertedIndexBST() {
         InvertedIndex=new BST<Word>();
@@ -24,7 +26,7 @@ public class InvertedIndexBST {
  
    
           if (!InvertedIndex.findkey(word)) {
-       
+             countCleanedWords++;
               Word w = new Word(word);
               w.docID.insert(id);
               InvertedIndex.insert(word, w);

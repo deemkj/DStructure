@@ -61,7 +61,27 @@ public class Index {
         return count;
     }
 
-    
- 
+    public LinkedList<Integer> SearchTermInDocuments(String word) {
+        LinkedList<Integer> docIDs = new LinkedList<>();
+        if (Documents.empty()) {
+            return docIDs;
+        }
 
+        Documents.findFirst();
+        while (!Documents.last()) {
+            
+            if (Documents.retrieve().containsWord(word)) {  
+                docIDs.insert(Documents.retrieve().id);
+            }
+            Documents.findNext();
+        }
+
+       
+        if (Documents.retrieve().containsWord(word)) {
+            docIDs.insert(Documents.retrieve().id);
+        }
+
+        return docIDs;
+    }
 }
+ 
