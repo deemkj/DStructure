@@ -24,18 +24,8 @@ public class Document {
     
     // Method to print the document details
     public void display() {
-        System.out.println("Document ID: " + id);
-        System.out.println("Words: ");
-        Words.findFirst();
-        while(!Words.last()){
-         System.out.print(Words.retrieve()+", ");
-    
-            Words.findNext();
-            
-        }
-        if(!Words.empty())
-          System.out.println(Words.retrieve());
-        
+        System.out.println("Document ID: " + id+ ", Number of Words: "+Words.size());
+       
         
     }
 

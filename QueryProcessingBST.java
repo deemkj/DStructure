@@ -21,7 +21,7 @@ public class QueryProcessingBST {
 
         if (terms.length == 0) return A;
 
-        // معالجة الكلمة الأولى
+   
         boolean found = inverted.isWordExist(terms[0].trim().toLowerCase());
         if (found) {
             A = inverted.InvertedIndex.retrieve().docID;

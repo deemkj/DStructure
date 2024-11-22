@@ -60,6 +60,19 @@ public class InvertedIndexBST {
       
       return false;
           }
+          
+          public LinkedList<Integer> searchWordInDocumentInvertedBST(String word){
+              LinkedList<Integer> docIDs=new LinkedList<Integer> ();
+              
+              if(!isWordExist(word))
+                 return docIDs;
+              
+              return InvertedIndex.retrieve().docID;
+              
+              
+              
+              
+          }
   }
         
         

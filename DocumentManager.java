@@ -52,11 +52,11 @@ static int countCleanedWords;
             DocLine = DocLine.toLowerCase().replaceAll("[^a-zA-Z0-9\\s]", ""); 
             DocLine = DocLine.replaceAll("\\s+", " "); 
 
-            // تقسيم السطر إلى كلمات
+        
             String[] tokens = DocLine.split(" "); 
 
             for (String token : tokens) {
-                // إزالة أي رموز غير الأبجدية في بداية ونهاية الكلمة
+   
                 token = token.replaceAll("^[^a-zA-Z]+|[^a-zA-Z]+$", "");
                 
                 if (!token.isEmpty()  && !isWordInList(uniqueWords, token)) {
@@ -70,10 +70,10 @@ static int countCleanedWords;
         System.out.println("Error reading the file: " + e.getMessage());
     }
 
-    return uniqueWords.size();  // العودة بحجم الـ LinkedList، وهو عدد الكلمات الفريدة
+    return uniqueWords.size();  
 }
 
-// طريقة للتحقق إذا كانت الكلمة موجودة بالفعل في LinkedList
+
 private boolean isWordInList(LinkedList<String> list, String word) {
     if (list.empty()) return false;
     list.findFirst();
@@ -85,15 +85,6 @@ private boolean isWordInList(LinkedList<String> list, String word) {
 }
 
 
-/*private boolean isWordInList(LinkedList<String> list, String word) {
-    if (list.empty()) return false;
-    list.findFirst();
-    while (!list.last()) {
-        if (list.retrieve().equalsIgnoreCase(word)) return true;
-        list.findNext();
-    }
-    return list.retrieve().equals(word); 
-}*/
 
 
 
@@ -299,7 +290,11 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                     break;
 
                 case 3:
-                    System.out.println("Number of documents in the index: " + documentManager.index.getDocumentCount());
+                    
+                    System.out.println("========== Indexed Tokens ==========: " );
+                            System.out.println("Document ID , Word Count");
+
+                    documentManager.index.display();
                     break;
 
                 case 4:
@@ -308,6 +303,12 @@ private boolean isWordInList(LinkedList<String> list, String word) {
       
                System.out.println("Total number of tokens in the index: " + ((countCleanedWords)));
                System.out.println("Vocabulary size: " + (vocabularySize));
+               
+               System.out.println("========== Document Word Count ==========: " );
+                            System.out.println("Document ID , Word Count");
+                             System.out.println("Word:  , Document Count");
+
+                            documentManager.Inverted_Index.display();
                break;
                 case 5 :
                      System.out.println("Retrieve a term:");
@@ -331,17 +332,41 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                                     System.out.println("Documents containing the term " + searchTerm + ":");
                                     docIDs.display();}
                                 break;
+                                
+                          case 2:
+                               System.out.println("Enter term to search about");
+                                String searchTerm2 = scanner.nextLine();
+                                LinkedList<Integer> docIDsInverted=documentManager.Inverted_Index.searchWordInDocumentInverted(searchTerm2);
+                                if(docIDsInverted.empty())
+                                    System.out.println("There is no document that contains this word");
+                                else{
+                                    System.out.println("Documents containing the term " + searchTerm2 + ":");
+                                    docIDsInverted.display();}
+                                break;
+                                
+                          case 3:
                               
-                          
-                          
+                              System.out.println("Enter term to search about");
+                                String searchTerm3 = scanner.nextLine();
+                                LinkedList<Integer> docIDsInvertedBST=documentManager.Inverted_Index_BST.searchWordInDocumentInvertedBST(searchTerm3);
+                                if(docIDsInvertedBST.empty())
+                                    System.out.println("There is no document that contains this word");
+                                else{
+                                    System.out.println("Documents containing the term " + searchTerm3 + ":");
+                                    docIDsInvertedBST.display();}
+                                break;
+                              
+                
                           
                           
                       }
-                        
+                      
+                      
                         
                         
                         
                     }
+                    break;
 
 
                 case 6:

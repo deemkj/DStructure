@@ -38,19 +38,14 @@ public class Word {
      return false;
  }
   public void display() {
-      System.out.println("Word: "+word );
-      docID.findFirst();
-      if(docID.empty()){
+       if(docID.empty()){
           System.out.println("There is no document has that word");
-          return;
-      }
-       System.out.println("Document IDs that have this word:");
-      while(!docID.last()){
-           System.out.print(docID.retrieve()+", ");
-           docID.findNext();
-      }
-      System.out.println(docID.retrieve()); 
-      System.out.println("**************************************");
+          return;}
+           
+    
+      System.out.println("Word: "+word +" , "+docID.size());
+      
+      System.out.println("-------------------------------------------");
   }
   
   public LinkedList<Integer> getIDs(){

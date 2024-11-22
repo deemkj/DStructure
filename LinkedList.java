@@ -118,9 +118,7 @@ public void remove(T val) {
 
 
 public void update(T newValue) {
-    //if (current == null) {
-       // throw new IllegalStateException("Current node is null. Ensure that findFirst() or findNext() is called before updateCurrent().");
-   // }
+   
     current.data = newValue; // Update the data in the current node
 }
 
