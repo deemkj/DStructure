@@ -9,12 +9,9 @@
  */
 public class InvertedIndex {
   LinkedList<Word> Inverted_Index;  
-  static int countCleanedWords;
 
     public InvertedIndex() {
         Inverted_Index=new LinkedList <Word> ();
-  
-
     }
   
   public void add(String word, int id){
@@ -26,7 +23,7 @@ public class InvertedIndex {
           w.addID(id);
           Inverted_Index.insert(w);
           
-
+          
       }
           
       
@@ -60,26 +57,6 @@ public class InvertedIndex {
           Inverted_Index.findNext();
      }
       Inverted_Index.retrieve().display();
-  }
-  
-  
-  public LinkedList<Integer> searchWordInDocumentInverted(String word){
-      LinkedList<Integer> docIDs=new LinkedList<Integer>();
-      
-      if(Inverted_Index.empty())
-      return docIDs;
-      
-      Inverted_Index.findFirst();
-      while(!Inverted_Index.last()){
-          if(Inverted_Index.retrieve().word.equals(word))
-             return Inverted_Index.retrieve().docID;
-      Inverted_Index.findNext();
-      }
-      if(Inverted_Index.retrieve().word.equals(word))
- return Inverted_Index.retrieve().docID;      
-      
-      
-      return docIDs;
   }
     
 }

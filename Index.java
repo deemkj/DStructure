@@ -8,80 +8,49 @@
  * @author deemkj
  */
 public class Index {
-    LinkedList<Document> Documents;
+    LinkedList <Document> Documents;
 
     public Index() {
-        Documents = new LinkedList<>();
+   Documents = new  LinkedList <Document> ();
     }
-
-    public void addDocument(Document document) {
-        Documents.insert(document);
+    
+    public void addDocument(Document d){
+        Documents.insert(d);
+        
     }
-
-    public void display() {
-        if (Documents.empty()) {
-            System.out.println("There is no Document to display");
-            return;
-        }
-        Documents.findFirst();
-        while (!Documents.last()) {
+    
+    public void display(){
+       if(Documents.empty()) {
+           System.out.println("There is no Document to display");
+       return;
+       }
+       Documents.findFirst();
+       while(!Documents.last()){
             Documents.retrieve().display();
             Documents.findNext();
-        }
-        Documents.retrieve().display();
+       }
+                   Documents.retrieve().display();
+
     }
+    
+    
+    public static void main(String[] args) {
+        
+   
+Index ind1=new Index () ;
+LinkedList<String>words=new LinkedList<>();
+words. insert ("national");
+words. insert ("flag");
+Document d1=new Document (1, words) ;
+ind1.addDocument(d1);
+LinkedList<String>words2=new LinkedList<>() ;
+words2.insert ("green") ;
+words2.insert ("color");
 
-    public Document getDocumentByID(Integer ID) {
-        if (Documents.empty()) {
-            return null;
-        }
-        Documents.findFirst();
-        while (!Documents.last()) {
-            if (Documents.retrieve().id == ID) {
-                return Documents.retrieve();
-            }
-            Documents.findNext();
-        }
-        if (Documents.retrieve().id == ID) {
-            return Documents.retrieve();
-        }
-        return null;
-    }
+Document d2=new Document (2, words2) ; 
+ind1.addDocument (d2) ;
 
+ind1.display () ;
 
-    public int getDocumentCount() {
-        int count = 0;
-        if (Documents.empty()) return count;
-        Documents.findFirst();
-        while (!Documents.last()) {
-            count++;
-            Documents.findNext();
-        }
-        count++; 
-        return count;
-    }
-
-    public LinkedList<Integer> SearchTermInDocuments(String word) {
-        LinkedList<Integer> docIDs = new LinkedList<>();
-        if (Documents.empty()) {
-            return docIDs;
-        }
-
-        Documents.findFirst();
-        while (!Documents.last()) {
-            
-            if (Documents.retrieve().containsWord(word)) {  
-                docIDs.insert(Documents.retrieve().id);
-            }
-            Documents.findNext();
-        }
-
-       
-        if (Documents.retrieve().containsWord(word)) {
-            docIDs.insert(Documents.retrieve().id);
-        }
-
-        return docIDs;
-    }
 }
- 
+}

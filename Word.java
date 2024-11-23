@@ -9,7 +9,7 @@
  */
 public class Word {
     String word;
-    LinkedList <Integer> docID;
+   private LinkedList <Integer> docID;
 
     public Word(String word ) {
         this.word = word;
@@ -38,17 +38,18 @@ public class Word {
      return false;
  }
   public void display() {
-       if(docID.empty()){
+      System.out.println("Word: "+word );
+      docID.findFirst();
+      if(docID.empty()){
           System.out.println("There is no document has that word");
-          return;}
-           
-    
-      System.out.println("Word: "+word +" , "+docID.size());
-      
-      System.out.println("-------------------------------------------");
-  }
-  
-  public LinkedList<Integer> getIDs(){
-      return docID;
+          return;
+      }
+       System.out.println("Document IDs that have this word:");
+      while(!docID.last()){
+           System.out.print(docID.retrieve()+", ");
+           docID.findNext();
+      }
+      System.out.println(docID.retrieve()); 
+      System.out.println("**************************************");
   }
 }
