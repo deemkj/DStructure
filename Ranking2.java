@@ -18,7 +18,7 @@ public DocRank(int id, int rank) {
 
 
     public void display() {
-        System.out.println(id + " " + rank);
+        System.out.println(id + "          " + rank);
     }
 }
 
@@ -27,7 +27,7 @@ public class Ranking2 {
     static Index index;
     static InvertedIndexBST invertedIndex;
     static String query;
-    static LinkedList<Integer> documentIds;
+    static LinkedList<Integer> documentIds; // (document ids in query before ranking)
     static LinkedList<DocRank> rankedDocuments;
 
     public Ranking2(Index index, InvertedIndexBST invertedIndex, String query) {
@@ -37,9 +37,59 @@ public class Ranking2 {
         documentIds = new LinkedList<>();
         rankedDocuments = new LinkedList<>();
     }
+    
+    
+    public static void generateRankedList() {
+        findRelevantDocuments(query);
+        if (documentIds.empty()) {
+            return;
+        }
+
+        documentIds.findFirst();
+        while (!documentIds.last()) {
+            Document document = getDocumentById(documentIds.retrieve());
+            if (document != null) {
+                int score = calculateDocumentScore(document, query);
+                DocRank docRank = new DocRank(documentIds.retrieve(), score);
+                insertRankedDocument(docRank);
+            }
+            documentIds.findNext();
+        }
+
+        Document document = getDocumentById(documentIds.retrieve());
+        if (document != null) {
+            int score = calculateDocumentScore(document, query);
+            DocRank docRank = new DocRank(documentIds.retrieve(), score);
+            insertRankedDocument(docRank);
+        }
+    }
+ public static void findRelevantDocuments(String query) {
+        if (query == null) return;
+
+        String[] terms = query.split("\\s+");
+        for (String term : terms) {
+            term = term.trim().toLowerCase();
+            if (invertedIndex.isWordExist(term)) {
+                LinkedList<Integer> termDocumentIds = invertedIndex.InvertedIndex.retrieve().docID;
+                addDocumentIds(termDocumentIds);
+            }
+        }
+    }
 
     public static Document getDocumentById(int id) {
         return index.getDocumentByID(id);
+    }
+    
+ public static int calculateDocumentScore(Document document, String query) {
+        if (query == null) return 0;
+
+        String[] terms = query.split(" ");
+        int totalScore = 0;
+
+        for (int i =0 ; i< terms.length ;i++) {
+            totalScore += countTermFrequency(document, terms[i].trim().toLowerCase());
+        }
+        return totalScore;
     }
 
     public static int countTermFrequency(Document document, String term) {
@@ -56,30 +106,8 @@ public class Ranking2 {
         return count;
     }
 
-    public static int calculateDocumentScore(Document document, String query) {
-        if (query == null) return 0;
-
-        String[] terms = query.split(" ");
-        int totalScore = 0;
-
-        for (String term : terms) {
-            totalScore += countTermFrequency(document, term.trim().toLowerCase());
-        }
-        return totalScore;
-    }
-
-    public static void findRelevantDocuments(String query) {
-        if (query == null) return;
-
-        String[] terms = query.split("\\s+");
-        for (String term : terms) {
-            term = term.trim().toLowerCase();
-            if (invertedIndex.isWordExist(term)) {
-                LinkedList<Integer> termDocumentIds = invertedIndex.InvertedIndex.retrieve().docID;
-                addDocumentIds(termDocumentIds);
-            }
-        }
-    }
+   
+   
 
     private static void addDocumentIds(LinkedList<Integer> termDocumentIds) {
         if (termDocumentIds.empty()) return;
@@ -138,31 +166,7 @@ public class Ranking2 {
         }
     }
 
-    public static void generateRankedList() {
-        findRelevantDocuments(query);
-        if (documentIds.empty()) {
-            return;
-        }
-
-        documentIds.findFirst();
-        while (!documentIds.last()) {
-            Document document = getDocumentById(documentIds.retrieve());
-            if (document != null) {
-                int score = calculateDocumentScore(document, query);
-                DocRank docRank = new DocRank(documentIds.retrieve(), score);
-                insertRankedDocument(docRank);
-            }
-            documentIds.findNext();
-        }
-
-        Document document = getDocumentById(documentIds.retrieve());
-        if (document != null) {
-            int score = calculateDocumentScore(document, query);
-            DocRank docRank = new DocRank(documentIds.retrieve(), score);
-            insertRankedDocument(docRank);
-        }
-    }
-
+    
     public static void insertRankedDocument(DocRank docRank) {
         if (rankedDocuments.empty()) {
             rankedDocuments.insert(docRank);

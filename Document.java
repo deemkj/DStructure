@@ -21,20 +21,30 @@ public class Document {
         this.Words = Words;
     }
 
+    
     // Method to print the document details
     public void display() {
-        System.out.println("Document ID: " + id);
-        System.out.println("Words: ");
+        System.out.println("Document ID: " + id+ ", Number of Words: "+Words.size()); 
+       
+        
+    }
+
+    public int getId() {
+        return id;
+    }
+    
+    public boolean containsWord(String w){
+        if(Words.empty())
+        return false;
         Words.findFirst();
         while(!Words.last()){
-         System.out.print(Words.retrieve()+", ");
-    
+            if(Words.retrieve().equalsIgnoreCase(w))
+                return true;
             Words.findNext();
-            
         }
-        if(!Words.empty())
-          System.out.println(Words.retrieve());
-        
+            if(Words.retrieve().equalsIgnoreCase(w))
+                return true;
+        return false;
         
     }
 }

@@ -11,13 +11,11 @@ import java.util.Scanner;
  *
  * @author deemkj
  */
-public class DocumentManager {
+public class DocumentManager{
   static  LinkedList<String> StopWords;
 static int countStopWords;    
-static int countCleanedWords;
+static int countWords;
   static  LinkedList<String> AllUniqueWords;
-
-
     Index index;
     InvertedIndex Inverted_Index;
     InvertedIndexBST Inverted_Index_BST;
@@ -46,21 +44,22 @@ static int countCleanedWords;
             String line = scanner.nextLine(); 
             
           
-                   String     DocLine=line;                   
+                   String DocLine=line;                   
 
 
-            DocLine = DocLine.toLowerCase().replaceAll("[^a-zA-Z0-9\\s]", ""); 
-            DocLine = DocLine.replaceAll("\\s+", " "); 
+
+ DocLine = DocLine.toLowerCase().replaceAll("[^a-zA-Z0-9\\s]", ""); 
+  DocLine = DocLine.replaceAll("\\s+", " "); 
 
         
-            String[] tokens = DocLine.split(" "); 
+            String[] AllWords = DocLine.split(" "); 
 
-            for (String token : tokens) {
+            for (String Word : AllWords) {
    
-                token = token.replaceAll("^[^a-zA-Z]+|[^a-zA-Z]+$", "");
+                Word = Word.replaceAll("^[^a-zA-Z]+|[^a-zA-Z]+$", "");
                 
-                if (!token.isEmpty()  && !isWordInList(uniqueWords, token)) {
-                    uniqueWords.insert(token);
+                if (!Word.isEmpty()  && !isWordInList(uniqueWords, Word)) {
+                    uniqueWords.insert(Word);
                 }
             }
         }
@@ -110,7 +109,7 @@ private boolean isWordInList(LinkedList<String> list, String word) {
 
 
                 String[] tokens = DocLine.split(" "); 
-                countCleanedWords+=tokens.length;
+                countWords+=tokens.length;
                 
                
                 
@@ -177,7 +176,8 @@ private boolean isWordInList(LinkedList<String> list, String word) {
         }
     }
 
-    public LinkedList<String> cleanAndExtractWords (String DocLine, int id){
+    public LinkedList<String> cleanAndExtractWords (String DocLine, int id){ // add words in Inverted_Index_BST and Inverted_Index
+                                                                             // after ensuring that the word is not exists in these lists
         LinkedList<String> words =new LinkedList<String>();
    
         DocLine = DocLine.toLowerCase().replaceAll("[^a-zA-Z0-9 ]", "");
@@ -197,6 +197,7 @@ private boolean isWordInList(LinkedList<String> list, String word) {
         return words;
     }
     
+    
   
     public boolean isExistINStopWords(String w){
         if(StopWords.empty())
@@ -215,20 +216,7 @@ private boolean isWordInList(LinkedList<String> list, String word) {
          }
       
     }
-    public void displayThegivenIDs(LinkedList<Integer> DocIDs){
-        DocIDs.findFirst();
-        while(!DocIDs.last()){
-            
-            Document d=index.getDocumentByID(DocIDs.retrieve());
-            if(d!=null)
-               d.display();
-        
-         DocIDs.findNext();
-        }
-         Document d=index.getDocumentByID(DocIDs.retrieve());
-            if(d!=null)
-               d.display();
-        }
+   
         
   
     public static void main (String[] args){
@@ -239,18 +227,13 @@ private boolean isWordInList(LinkedList<String> list, String word) {
         documentManager.Load("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
         
 
-        QueryProcessing queryProcessor = new QueryProcessing(documentManager.Inverted_Index);
         QueryProcessingBST queryProcessorBST = new QueryProcessingBST(documentManager.Inverted_Index_BST);
 
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("========== Test Menu ==========");
-            //System.out.println("1. Boolean Retrieval");
-           // System.out.println("2. Ranked Retrieval");
-           // System.out.println("3. Indexed Documents");
-           // System.out.println("4. Indexed Tokens");
-           // System.out.println("5. Exit");
+            
            System.out.println("1. Boolean Retrieval");
             System.out.println("2. Ranked Retrieval");
             System.out.println("3. Indexed Document");
@@ -267,8 +250,8 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                 case 1:
                     System.out.print("Enter a Boolean query: ");
                     String booleanQuery = scanner.nextLine();
-                    LinkedList<Integer> booleanResults = queryProcessor.BooleanQuery(booleanQuery);
-                    System.out.println("Unranked Documents:");
+                    LinkedList<Integer> booleanResults = queryProcessorBST.BooleanQuery(booleanQuery);
+                   System.out.println("========== Query: "+booleanQuery+"==========");
                     if (booleanResults.empty()) {
                         System.out.println("No documents found.");
                     } else {
@@ -284,6 +267,8 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                 case 2:
                     System.out.print("Enter a ranked query: ");
                     String rankedQuery = scanner.nextLine();
+                     System.out.println("========== Ranked Query: "+rankedQuery+"==========");
+
                     Ranking2 ranking = new Ranking2(documentManager.index, documentManager.Inverted_Index_BST, rankedQuery);
                     ranking.generateRankedList();
                     ranking.displayRankedDocuments();
@@ -292,7 +277,7 @@ private boolean isWordInList(LinkedList<String> list, String word) {
                 case 3:
                     
                     System.out.println("========== Indexed Tokens ==========: " );
-                            System.out.println("Document ID , Word Count");
+                            System.out.println("Document ID   ,      Word Count");
 
                     documentManager.index.display();
                     break;
@@ -301,12 +286,11 @@ private boolean isWordInList(LinkedList<String> list, String word) {
              documentManager.countTokensInFile("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
            int vocabularySize = documentManager.calculateVocabularySize("/Users/deemkj/Documents/Java 2/phase2/DStructureProjrct/src/main/java/dataset.csv");
       
-               System.out.println("Total number of tokens in the index: " + ((countCleanedWords)));
+               System.out.println("Total number of tokens in the index: " + ((countWords)));
                System.out.println("Vocabulary size: " + (vocabularySize));
                
                System.out.println("========== Document Word Count ==========: " );
-                            System.out.println("Document ID , Word Count");
-                             System.out.println("Word:  , Document Count");
+                             System.out.println("WORD   , DOCUMENT COUNT");
 
                             documentManager.Inverted_Index.display();
                break;
@@ -370,12 +354,12 @@ private boolean isWordInList(LinkedList<String> list, String word) {
 
 
                 case 6:
-                    System.out.println("Exiting...");
+                    System.out.println("Exiting..");
                     scanner.close();
                     return;
 
                 default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("Invalid choice, Please try again");
             }
             System.out.println();
         }

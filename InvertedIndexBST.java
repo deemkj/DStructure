@@ -44,7 +44,7 @@ public class InvertedIndexBST {
                   return;
               }
              
-              InvertedIndex.displayInOrder();
+              InvertedIndex.displayInOrder(); //LNR using BST class
           }
           
           
@@ -65,9 +65,9 @@ public class InvertedIndexBST {
               LinkedList<Integer> docIDs=new LinkedList<Integer> ();
               
               if(!isWordExist(word))
-                 return docIDs;
+                 return docIDs; // empty list 
               
-              return InvertedIndex.retrieve().docID;
+              return InvertedIndex.retrieve().docID; // retrieve word object then return list of IDs  
               
               
               

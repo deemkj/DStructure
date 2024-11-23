@@ -8,11 +8,11 @@
  * @author deemkj
  */
  class BSTNode <T> {
-	public String key;
+	public String key;   
 	public T data;
 	public BSTNode<T> left, right;
 	
-	/** Creates a new instance of BSTNode */
+	//Creates a new instance of BSTNode 
 	public BSTNode(String k, T val) {
 		key = k;
 		data = val;
@@ -25,7 +25,7 @@ public class BST<T> {
     
    private  BSTNode<T> root, current;
 	
-	/** Creates a new instance of BST */
+	//Creates a new instance of BST 
 	public BST() {
 		root = current = null;
 	}
@@ -91,7 +91,7 @@ public class BST<T> {
 	}
                 
                 
-          public void displayInOrder() {
+          public void displayInOrder() { //LNR increasing 
               if (root == null) {
                  System.out.println("The tree is empty");
               } else {
@@ -103,8 +103,8 @@ public class BST<T> {
              if (node == null) return;
 
              traverseAndDisplay(node.left);
-             //System.out.println("Key: " + node.key);
-            ((Word)node.data).display();
+             
+            ((Word)node.data).display(); // casting to Word object to call display method since its type BSTNode 
             traverseAndDisplay(node.right);
          }
 

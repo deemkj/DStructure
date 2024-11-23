@@ -14,28 +14,29 @@ public class QueryProcessingBST {
         this.inverted = inverted;
     }
 
-    public static LinkedList<Integer> andQ(String query) {
-        LinkedList<Integer> A = new LinkedList<>();
-        LinkedList<Integer> B = new LinkedList<>();
+    public static LinkedList<Integer> andQ(String query) { // just add IDs in the lists then send it to andQ(override method )
+                                                           // to return the intersection 
+        LinkedList<Integer> L1 = new LinkedList<>();
+        LinkedList<Integer> L2 = new LinkedList<>();
         String[] terms = query.split("AND");
 
-        if (terms.length == 0) return A;
+        if (terms.length == 0) return L1;
 
    
         boolean found = inverted.isWordExist(terms[0].trim().toLowerCase());
         if (found) {
-            A = inverted.InvertedIndex.retrieve().docID;
+            L1 = inverted.InvertedIndex.retrieve().docID; // retrieve the list of IDs in word object
         }
 
         for (int i = 1; i < terms.length; i++) {
             found = inverted.isWordExist(terms[i].trim().toLowerCase()); 
             if (found) {
-                B = inverted.InvertedIndex.retrieve().docID;
-                A = andQ(A, B);
+                L2 = inverted.InvertedIndex.retrieve().docID;
+                L1 = andQ(L1, L2);
             }
         }
 
-        return A;
+        return L1;
     }
 
     public static LinkedList<Integer> andQ(LinkedList<Integer> a, LinkedList<Integer> b) {
@@ -43,8 +44,8 @@ public class QueryProcessingBST {
         if (a.empty() || b.empty())
             return result;
 
-        a.findFirst();
-        while (true) {
+        a.findFirst(); //Nested loop
+        while (true) {   /// for each id in A list compare it with all IDs in B list if the id exists in both list it will add it in the result list
             boolean found = isExist(result, a.retrieve());
             if (!found) {
                 b.findFirst();
@@ -82,27 +83,27 @@ public class QueryProcessingBST {
     
     
     public static LinkedList<Integer> ORQ(String query) {
-        LinkedList<Integer> A = new LinkedList<>();
-        LinkedList<Integer> B = new LinkedList<>();
+        LinkedList<Integer> L1 = new LinkedList<>();
+        LinkedList<Integer> L2 = new LinkedList<>();
         String[] terms = query.split("OR");
 
-        if (terms.length == 0) return A;
+        if (terms.length == 0) return L1;
 
-        // معالجة الكلمة الأولى
+      
         boolean found = inverted.isWordExist(terms[0].trim().toLowerCase());
         if (found) {
-            A = inverted.InvertedIndex.retrieve().docID;
+            L1 = inverted.InvertedIndex.retrieve().docID;   // for the first word
         }
 
         for (int i = 1; i < terms.length; i++) {
             found = inverted.isWordExist(terms[i].trim().toLowerCase()); 
             if (found) {
-                B = inverted.InvertedIndex.retrieve().docID;
-                A = ORQ(A, B);
+                L2 = inverted.InvertedIndex.retrieve().docID;
+                L1 = ORQ(L1, L2);
             }
         }
 
-        return A;
+        return L1;
     }
 
     
@@ -115,7 +116,7 @@ public class QueryProcessingBST {
         if (a.empty() && b.empty())
             return result;
 
-        a.findFirst();
+        a.findFirst();    // first add IDs of A in result 
         while (!a.empty()) {
             boolean found = isExist(result, a.retrieve());
             if (!found) {
@@ -128,7 +129,7 @@ public class QueryProcessingBST {
             else
                 break;
         }
-        b.findFirst();
+        b.findFirst(); 
         while(!b.empty()){
                         boolean found = isExist(result, b.retrieve());
                          if (!found) {
@@ -148,7 +149,7 @@ public class QueryProcessingBST {
     }
 
     
-     public static LinkedList<Integer> BooleanQuery(String query) {
+     public static LinkedList<Integer> BooleanQuery(String query) {  // here we start the query 
          query=query.replaceAll("[^a-zA-Z0-9\\sANDOR]", " ").replaceAll("\\s+", " ").trim();
 
     if (!query.contains("AND") && !query.contains("OR"))
@@ -164,10 +165,10 @@ public class QueryProcessingBST {
     LinkedList<Integer> A = new LinkedList<Integer>();
     LinkedList<Integer> B = new LinkedList<Integer>();
     if (query.length() == 0) return A;
-    String ors[] = query.split("OR");
-    A = andQ(ors[0]);
-    for (int i = 1; i < ors.length; i++) {
-        B = andQ(ors[i]);
+    String ORList[] = query.split("OR");
+    A = andQ(ORList[0]);
+    for (int i = 1; i < ORList.length; i++) {
+        B = andQ(ORList[i]);
         A = ORQ(A, B);
     }
     return A;
